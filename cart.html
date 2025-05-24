@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Your Cart - Dusty Shelf</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: whitesmoke;
+        }
+
+        #cart-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgb(7, 129, 123);
+            border: 2px solid #5a0606;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            color: white;
+            border-radius: 10px;
+        }
+
+        #cart-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #cart-list li {
+            background: wheat;
+            margin: 5px;
+            padding: 8px;
+            border-radius: 5px;
+            color: black;
+        }
+
+        button {
+            background-color: rgb(219, 224, 224);
+            color: rgb(219, 35, 35);
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: rgb(9, 139, 0);
+            color: white;
+        }
+
+        footer {
+            background-color: whitesmoke;
+            color: blue;
+            padding: 15px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Your Cart</h1>
+    <section id="cart-section">
+        <h2>Books in Cart</h2>
+        <ul id="cart-list"></ul>
+    </section>
+
+    <!-- Buttons -->
+    <button onclick="window.location.href='index.html'">Back to Home</button>
+    <button onclick="window.location.href='books.html'">Back to books</button>
+    <button onclick="clearCart()">Clear Cart</button>
+    <button onclick="proceedToPayment()">Proceed to Payment</button>
+
+    <script>
+        function displayCart() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let cartList = document.getElementById("cart-list");
+            cartList.innerHTML = ""; // Clear previous items
+
+            if (cart.length > 0) {
+                cart.forEach(item => {
+                    let li = document.createElement("li");
+                    li.innerText = item;
+                    cartList.appendChild(li);
+                });
+            } else {
+                cartList.innerHTML = "<li>Your cart is empty.</li>";
+            }
+        }
+
+        function clearCart() {
+            localStorage.removeItem("cart");
+            displayCart();
+            alert("Cart has been cleared!");
+        }
+
+        function proceedToPayment() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            if (cart.length === 0) {
+                alert("Your cart is empty. Please add items before proceeding to payment.");
+            } else {
+                window.location.href = "payment.html"; // Update with actual payment gateway URL if needed
+            }
+        }
+
+        window.onload = function () {
+            displayCart();
+        };
+    </script>
+
+    <footer>
+        <div id="f-info" class="f-info sticky-bottom">
+            <div class="f-info-social">
+                <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://linkedin.com" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+            <div>&copy; Wunderlust Private Limited</div>
+            <div class="f-info-links">
+                <a href="/privacy">Privacy</a>
+                <a href="/terms">Terms</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

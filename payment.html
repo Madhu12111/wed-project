@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Payment - Dusty Shelf</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: whitesmoke;
+        }
+
+        #payment-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgb(7, 129, 123);
+            border: 2px solid #5a0606;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            color: white;
+            border-radius: 10px;
+        }
+
+        button {
+            background-color: rgb(219, 224, 224);
+            color: rgb(219, 35, 35);
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: rgb(9, 139, 0);
+            color: white;
+        }
+
+        #bill-section {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border: 2px solid #000;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 10px;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Payment</h1>
+    <section id="payment-section">
+        <h2>Enter Payment UPI ID</h2>
+        <p>Books Selected:</p>
+        <ul id="book-list"></ul>
+        <p>Total Amount: $<span id="total-amount">0</span></p>
+        <input type="text" id="payment-url" placeholder="Enter UPI ID (e.g., 7075682352@ybl)">
+        <p><a id="payment-link" href="#" target="_blank" style="display: none;">Click here to Pay</a></p>
+        <p id="error-message" style="color: red; display: none;">Please enter a valid UPI ID (e.g., 7075682352@ybl)</p>
+        <button onclick="updatePaymentDetails()">Update Payment Details</button>
+        <button onclick="showReceipt()">Proceed to Payment</button>
+        <button onclick="window.location.href='index.html'">Back to Home</button>
+        <button onclick="window.location.href='cart.html'">Back to Cart</button>
+    </section>
+
+    <section id="bill-section">
+        <h2>Bill Receipt</h2>
+        <p>Thank you for your purchase!</p>
+        <p>Books Purchased:</p>
+        <ul id="bill-book-list"></ul>
+        <p>Total Amount Paid: $<span id="bill-amount"></span></p>
+        <p>Transaction ID: <span id="transaction-id"></span></p>
+        <button onclick="window.location.href='index.html'">Go to Home</button>
+    </section>
+
+    <script>
+        function loadCart() {
+            let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+            let totalAmount = cartItems.reduce((sum, item) => sum + item.price, 0);
+            
+            document.getElementById("total-amount").innerText = totalAmount;
+            let bookList = document.getElementById("book-list");
+            bookList.innerHTML = "";
+            
+            cartItems.forEach(item => {
+                let li = document.createElement("li");
+                li.innerText = `${item.name} - $${item.price}`;
+                bookList.appendChild(li);
+            });
+        }
+        
+        function updatePaymentDetails() {
+            let paymentUrl = document.getElementById("payment-url").value;
+            let paymentLink = document.getElementById("payment-link");
+            let errorMessage = document.getElementById("error-message");
+            
+            let upiRegex = /^[0-9]{10}@\w+$/;
+            if (upiRegex.test(paymentUrl)) {
+                paymentLink.href = `upi://${paymentUrl}`;
+                paymentLink.style.display = "inline";
+                errorMessage.style.display = "none";
+            } else {
+                errorMessage.style.display = "block";
+            }
+        }
+        
+        function showReceipt() {
+            let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+            let totalAmount = cartItems.reduce((sum, item) => sum + item.price, 0);
+            let transactionId = "TXN" + Math.floor(Math.random() * 1000000);
+            
+            let billBookList = document.getElementById("bill-book-list");
+            billBookList.innerHTML = "";
+            
+            cartItems.forEach(item => {
+                let li = document.createElement("li");
+                li.innerText = `${item.name} - $${item.price}`;
+                billBookList.appendChild(li);
+            });
+
+            document.getElementById("bill-amount").innerText = totalAmount;
+            document.getElementById("transaction-id").innerText = transactionId;
+            
+            document.getElementById("payment-section").style.display = "none";
+            document.getElementById("bill-section").style.display = "block";
+
+            localStorage.removeItem("cart");
+            localStorage.removeItem("cartTotal");
+        }
+
+        // Load cart data on page load
+        loadCart();
+    </script>
+</body>
+
+</html>
